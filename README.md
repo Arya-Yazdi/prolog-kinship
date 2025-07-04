@@ -94,4 +94,3 @@ Facts and Infered Facts (simplified, merged and completed):
 
     widow is i's grandma.
         i is his own grandpa.
-        
