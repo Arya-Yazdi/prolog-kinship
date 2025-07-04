@@ -18,12 +18,12 @@ male(sonny).
 female(widow).
 female(redhead).
 
-parent(jeff, i). % jeff is i's parent
-parent(widow, redhead).
-parent(i, bobby).
-parent(widow, bobby).
-parent(jeff, sonny).
-parent(redhead, sonny).
+is_parent_of(jeff, i). % jeff is i's parent
+is_parent_of(widow, redhead).
+is_parent_of(i, bobby).
+is_parent_of(widow, bobby).
+is_parent_of(jeff, sonny).
+is_parent_of(redhead, sonny).
 
 spouse(i, widow).
 spouse(widow, i).       % Needed to avoid infinite loops.
@@ -32,44 +32,44 @@ spouse(redhead, jeff).  % Needed to avoid infinite loops.
 
 
 %%% Kinship relationship rules
-step_parent(X, Y) :- parent(Z, Y), spouse(X, Z), \+ parent(X, Y). % \+ parent keeps step and biological parents seperate to avoid duplicated.
+step_parent(X, Y) :- is_parent_of(Z, Y), spouse(X, Z), \+ is_parent_of(X, Y). % \+ is_parent_of keeps step and biological parents seperate to avoid duplicated.
 
-% isParentOf() will now be used instead of parent() as a generalized (step+biological) form of parenthood.
-isParentOf(X, Y) :- parent(X, Y).
-isParentOf(X, Y) :- step_parent(X, Y).
+% parent() will now be used instead of is_parent_of() as a generalized (step+biological) form of parenthood.
+parent(X, Y) :- is_parent_of(X, Y).
+parent(X, Y) :- step_parent(X, Y).
 
-father(X, Y) :- male(X), isParentOf(X, Y).
-mother(X, Y) :- female(X), isParentOf(X, Y).
+father(X, Y) :- male(X), parent(X, Y).
+mother(X, Y) :- female(X), parent(X, Y).
 
-son(X, Y) :- male(X), isParentOf(Y, X).
+son(X, Y) :- male(X), parent(Y, X).
 son(X, Y) :- son_in_law(X, Y). % Song assumes a son-in-law is actually your son since it drops the 'step' label.
-son_in_law(X, Y) :- male(X), spouse(X, Z), isParentOf(Y, Z). % Husband of one's child.
+son_in_law(X, Y) :- male(X), spouse(X, Z), parent(Y, Z). % Husband of one's child.
 
-daughter(X, Y) :- female(X), isParentOf(Y, X).
-daughter_in_law(X, Y) :-  female(X), spouse(X, Z), isParentOf(Y, Z). % wife of one's child.
+daughter(X, Y) :- female(X), parent(Y, X).
+daughter_in_law(X, Y) :-  female(X), spouse(X, Z), parent(Y, Z). % wife of one's child.
 
-grand_parent(X, Y) :- isParentOf(X, Z), isParentOf(Z, Y).
-grand_father(X, Y) :- male(X), isParentOf(X, Z), isParentOf(Z, Y).
-grand_mother(X, Y) :- female(X), isParentOf(X, Z), isParentOf(Z, Y).
+grand_parent(X, Y) :- parent(X, Z), parent(Z, Y).
+grand_father(X, Y) :- male(X), parent(X, Z), parent(Z, Y).
+grand_mother(X, Y) :- female(X), parent(X, Z), parent(Z, Y).
 
 grand_child(X, Y) :- grand_parent(Y, X).
 
-sibling(X, Y) :- isParentOf(Z, X), isParentOf(Z, Y), X\=Y.
-brother(X, Y) :- male(X), isParentOf(Z, X), isParentOf(Z, Y), X\=Y.
-sister(X, Y) :- female(X), isParentOf(Z, X), isParentOf(Z, Y), X\=Y.
+sibling(X, Y) :- parent(Z, X), parent(Z, Y), X\=Y.
+brother(X, Y) :- male(X), parent(Z, X), parent(Z, Y), X\=Y.
+sister(X, Y) :- female(X), parent(Z, X), parent(Z, Y), X\=Y.
 
-uncle(X, Y) :- male(X), isParentOf(Z, Y), sibling(Z, X).
-aunty(X, Y) :- female(X), isParentOf(Z, Y), sibling(Z, X).
+uncle(X, Y) :- male(X), parent(Z, Y), sibling(Z, X).
+aunty(X, Y) :- female(X), parent(Z, Y), sibling(Z, X).
 
 brother_in_law(X, Y) :- spouse(Z, Y), brother(X, Z).
 sister_in_law(X, Y) :- spouse(Z, Y), sister(X, Z).
-
 
 isBrotherOf(X, Y) :- brother(X, Y).
 isBrotherOf(X, Y) :- brother_in_law(X, Y).
 
 isSisterOf(X, Y) :- sister(X, Y).
 isSisterOf(X, Y) :- sister_in_law(X, Y).
+
 
 %%% TESTS
 % Test 1 - from documentation
