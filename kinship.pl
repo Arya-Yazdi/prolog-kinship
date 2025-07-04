@@ -10,7 +10,7 @@ Characters:
 
 
 
-%%% Facts
+%%% Facts from song
 male(i).
 male(jeff).
 male(bobby).
@@ -33,25 +33,28 @@ spouse(redhead, jeff).  % Needed to avoid infinite loops.
 
 
 %%% Kinship relationship rules
-step_parent(X, Y) :- parent(Z, Y), spouse(X, Z), \+ parent(X, Y). % Cannot merge with parent(X, Y) because it will create an infinite loop. \+ parent keeps step and biological parents seperate to avoid duplicated.
+step_parent(X, Y) :- parent(Z, Y), spouse(X, Z), \+ parent(X, Y). % Cannot merge with parent(X, Y) because it will create an infinite loop. 
+                                                                  % \+ parent keeps step and biological parents seperate to avoid duplicated.
 
 % isParentOf() will now be used instead of parent() as a generalized (step+biological) form of parenthood.
 isParentOf(X, Y) :- parent(X, Y).
 isParentOf(X, Y) :- step_parent(X, Y).
 
-son_in_law(X, Y) :- male(X), spouse(X, Z), isParentOf(Y, Z). % Husband of one's child.
-
-daughter_in_law(X, Y) :-  female(X), spouse(X, Z), isParentOf(Y, Z). % wife of one's child.
+father(X, Y) :- male(X), isParentOf(X, Y).
+mother(X, Y) :- female(X), isParentOf(X, Y).
 
 son(X, Y) :- male(X), isParentOf(Y, X).
 son(X, Y) :- son_in_law(X, Y). % Song assumes a son-in-law is actually your son since it drops the 'step' label.
+son_in_law(X, Y) :- male(X), spouse(X, Z), isParentOf(Y, Z). % Husband of one's child.
 
 daughter(X, Y) :- female(X), isParentOf(Y, X).
+daughter_in_law(X, Y) :-  female(X), spouse(X, Z), isParentOf(Y, Z). % wife of one's child.
 
-father(X, Y) :- male(X), isParentOf(X, Y).
+grand_parent(X, Y) :- isParentOf(X, Z), isParentOf(Z, Y).
+grand_father(X, Y) :- male(X), isParentOf(X, Z), isParentOf(Z, Y).
+grand_mother(X, Y) :- female(X), isParentOf(X, Z), isParentOf(Z, Y).
 
-mother(X, Y) :- female(X), isParentOf(X, Y).
-
+grand_child(X, Y) :- grand_parent(Y, X).
 
 
 
