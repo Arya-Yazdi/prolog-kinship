@@ -117,13 +117,3 @@ test2 :- spouse(i, widow),               % I was married to a widow
 
 
 
-
-%%% ISSUES
-% parent(X, Y) :- parent(Z, Y), spouse(X, Z).
-% step_parent(X, Y) = parent(Z, Y), spouse(X, Z). parent(X, Y) = step_parent(X, Y).
-% ^ Cannot merge with parent(X, Y) because it will create an infinite loop. 
-
-% parent(i, redhead). % This solves issue with defining step-parents as parents,
-                    % since it would have an infinite loop with step/parent(X, Y) = parent(Z, Y), spouse(X, Z). 
-                    % Look at "ISSUES" for attempted alternatives.
-                    % step_parents(X, Y) has been used as an alternative, even though it leads to ugly code.
