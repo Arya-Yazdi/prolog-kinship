@@ -64,6 +64,29 @@ aunty(X, Y) :- female(X), isParentOf(Z, Y), sibling(Z, X).
 brother_in_law(X, Y) :- spouse(Z, Y), brother(X, Z).
 sister_in_law(X, Y) :- spouse(Z, Y), sister(X, Z).
 
+
+isBrotherOf(X, Y) :- brother(X, Y).
+isBrotherOf(X, Y) :- brother_in_law(X, Y).
+
+isSisterOf(X, Y) :- sister(X, Y).
+isSisterOf(X, Y) :- sister_in_law(X, Y).
+
+%%% TESTS
+% Test 1 - from documentation
+test1 :- daughter(redhead,i), 
+         mother(redhead,i), 
+         son_in_law(jeff,i), 
+         isBrotherOf(bobby, jeff), 
+         uncle(bobby,i), 
+         isBrotherOf(bobby,redhead), 
+         grand_child(sonny,i), 
+         mother(widow,redhead), 
+         grand_mother(widow,i), 
+         grand_child(i,widow), 
+         grand_father(i,i).
+
+
+
 %%% ISSUES
 % parent(X, Y) :- parent(Z, Y), spouse(X, Z).
 % step_parent(X, Y) = parent(Z, Y), spouse(X, Z). parent(X, Y) = step_parent(X, Y).
