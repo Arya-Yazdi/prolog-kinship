@@ -54,13 +54,15 @@ grand_mother(X, Y) :- female(X), isParentOf(X, Z), isParentOf(Z, Y).
 
 grand_child(X, Y) :- grand_parent(Y, X).
 
-sibling(X, Y) :- isParentOf(Z, X), isParentOf(Z, Y).
+sibling(X, Y) :- isParentOf(Z, X), isParentOf(Z, Y), X\=Y.
 brother(X, Y) :- male(X), isParentOf(Z, X), isParentOf(Z, Y), X\=Y.
 sister(X, Y) :- female(X), isParentOf(Z, X), isParentOf(Z, Y), X\=Y.
 
 uncle(X, Y) :- male(X), isParentOf(Z, Y), sibling(Z, X).
 aunty(X, Y) :- female(X), isParentOf(Z, Y), sibling(Z, X).
 
+brother_in_law(X, Y) :- spouse(Z, Y), brother(X, Z).
+sister_in_law(X, Y) :- spouse(Z, Y), sister(X, Z).
 
 %%% ISSUES
 % parent(X, Y) :- parent(Z, Y), spouse(X, Z).
