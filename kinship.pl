@@ -55,21 +55,21 @@ grand_mother(X, Y) :- female(X), parent(X, Z), parent(Z, Y).
 grand_child(X, Y) :- grand_parent(Y, X).
 
 sibling(X, Y) :- parent(Z, X), parent(Z, Y), X\=Y.
-isBrotherOf(X, Y) :- male(X), parent(Z, X), parent(Z, Y), X\=Y.
-isSisterOf(X, Y) :- female(X), parent(Z, X), parent(Z, Y), X\=Y. % We don't need to take care of step-sister as parent() coveres step-parents.
+is_brother_of(X, Y) :- male(X), parent(Z, X), parent(Z, Y), X\=Y.
+is_sister_of(X, Y) :- female(X), parent(Z, X), parent(Z, Y), X\=Y. % We don't need to take care of step-sister as parent() coveres step-parents.
 
 uncle(X, Y) :- male(X), parent(Z, Y), sibling(Z, X).
 aunty(X, Y) :- female(X), parent(Z, Y), sibling(Z, X).
 
-brother_in_law(X, Y) :- spouse(Z, Y), isBrotherOf(X, Z).
-sister_in_law(X, Y) :- spouse(Z, Y), isSisterOf(X, Z).
+brother_in_law(X, Y) :- spouse(Z, Y), is_brother_of(X, Z).
+sister_in_law(X, Y) :- spouse(Z, Y), is_sister_of(X, Z).
 
 % brother() is now used as a generic form of brother, step-brother, and brother in law.
-brother(X, Y) :- isBrotherOf(X, Y).
+brother(X, Y) :- is_brother_of(X, Y).
 brother(X, Y) :- brother_in_law(X, Y).
 
 % sister() is now used as a generic form of sister, step-sister, and sister in law.
-sister(X, Y) :- isSisterOf(X, Y).
+sister(X, Y) :- is_sister_of(X, Y).
 sister(X, Y) :- sister_in_law(X, Y).
 
 
