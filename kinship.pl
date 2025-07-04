@@ -9,7 +9,6 @@ Characters:
 */
 
 
-
 %%% Facts from song
 male(i).
 male(jeff).
@@ -58,6 +57,9 @@ grand_child(X, Y) :- grand_parent(Y, X).
 sibling(X, Y) :- isParentOf(Z, X), isParentOf(Z, Y).
 brother(X, Y) :- male(X), isParentOf(Z, X), isParentOf(Z, Y), X\=Y.
 sister(X, Y) :- female(X), isParentOf(Z, X), isParentOf(Z, Y), X\=Y.
+
+uncle(X, Y) :- male(X), isParentOf(Z, Y), sibling(Z, X).
+aunty(X, Y) :- female(X), isParentOf(Z, Y), sibling(Z, X).
 
 
 %%% ISSUES
