@@ -33,8 +33,7 @@ spouse(redhead, jeff).  % Needed to avoid infinite loops.
 
 
 %%% Kinship relationship rules
-step_parent(X, Y) :- parent(Z, Y), spouse(X, Z), \+ parent(X, Y). % Cannot merge with parent(X, Y) because it will create an infinite loop. 
-                                                                  % \+ parent keeps step and biological parents seperate to avoid duplicated.
+step_parent(X, Y) :- parent(Z, Y), spouse(X, Z), \+ parent(X, Y). % \+ parent keeps step and biological parents seperate to avoid duplicated.
 
 % isParentOf() will now be used instead of parent() as a generalized (step+biological) form of parenthood.
 isParentOf(X, Y) :- parent(X, Y).
@@ -56,13 +55,15 @@ grand_mother(X, Y) :- female(X), isParentOf(X, Z), isParentOf(Z, Y).
 
 grand_child(X, Y) :- grand_parent(Y, X).
 
-
-
+sibling(X, Y) :- isParentOf(Z, X), isParentOf(Z, Y).
+brother(X, Y) :- male(X), isParentOf(Z, X), isParentOf(Z, Y), X\=Y.
+sister(X, Y) :- female(X), isParentOf(Z, X), isParentOf(Z, Y), X\=Y.
 
 
 %%% ISSUES
 % parent(X, Y) :- parent(Z, Y), spouse(X, Z).
 % step_parent(X, Y) = parent(Z, Y), spouse(X, Z). parent(X, Y) = step_parent(X, Y).
+% ^ Cannot merge with parent(X, Y) because it will create an infinite loop. 
 
 % parent(i, redhead). % This solves issue with defining step-parents as parents,
                     % since it would have an infinite loop with step/parent(X, Y) = parent(Z, Y), spouse(X, Z). 
